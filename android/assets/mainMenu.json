@@ -1,0 +1,8 @@
+{
+    com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+        frMenuStartGame: { imageOver: startGameOver, imageUp: startGameUp, imageDown: startGameUp },
+        frMenuOptions: { imageOver: optionsOver, imageUp: optionsUp, imageDown: optionsUp },
+        frMenuCredits: {imageOver: creditsOver, imageUp: creditsUp, imageDown: creditsUp },
+        frMenuTutorial: { imageOver: tutorialOver, imageUp: tutorialUp, imageDown: tutorialUp }
+    }
+}

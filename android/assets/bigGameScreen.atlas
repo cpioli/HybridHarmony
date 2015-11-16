@@ -1,0 +1,69 @@
+
+bigGameScreen.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bigQueueContainer
+  rotate: false
+  xy: 1, 27
+  size: 32, 520
+  orig: 32, 520
+  offset: 0, 0
+  index: -1
+bigBeaker
+  rotate: false
+  xy: 35, 419
+  size: 140, 128
+  orig: 140, 128
+  offset: 0, 0
+  index: -1
+clipSpeedometer
+  rotate: false
+  xy: 35, 382
+  size: 130, 35
+  orig: 130, 35
+  offset: 0, 0
+  index: -1
+emptySpeedometer
+  rotate: false
+  xy: 35, 345
+  size: 130, 35
+  orig: 130, 35
+  offset: 0, 0
+  index: -1
+background_default
+  rotate: false
+  xy: 177, 499
+  size: 48, 48
+  split: 6, 6, 6, 6
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+bigArrow
+  rotate: false
+  xy: 35, 297
+  size: 48, 46
+  orig: 48, 46
+  offset: 0, 0
+  index: -1
+bigEncapsulator1
+  rotate: false
+  xy: 177, 457
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+bigEncapsulator2
+  rotate: false
+  xy: 177, 457
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+bigSelectionArrow
+  rotate: false
+  xy: 1, 1
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1

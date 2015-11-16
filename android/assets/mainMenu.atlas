@@ -1,0 +1,61 @@
+
+mainMenu.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+creditsOver
+  rotate: false
+  xy: 1, 133
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+creditsUp
+  rotate: false
+  xy: 1, 67
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+optionsOver
+  rotate: false
+  xy: 259, 133
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+optionsUp
+  rotate: false
+  xy: 1, 1
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+startGameOver
+  rotate: false
+  xy: 259, 67
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+startGameUp
+  rotate: false
+  xy: 517, 133
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+tutorialOver
+  rotate: false
+  xy: 259, 1
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+tutorialUp
+  rotate: false
+  xy: 517, 67
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1

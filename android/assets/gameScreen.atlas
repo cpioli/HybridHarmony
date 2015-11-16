@@ -1,0 +1,33 @@
+
+gameScreen.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+queueContainer
+  rotate: false
+  xy: 1, 15
+  size: 16, 260
+  orig: 16, 260
+  offset: 0, 0
+  index: -1
+beaker
+  rotate: false
+  xy: 19, 211
+  size: 70, 64
+  orig: 70, 64
+  offset: 0, 0
+  index: -1
+newArrowLarge
+  rotate: false
+  xy: 19, 186
+  size: 24, 23
+  orig: 24, 23
+  offset: 0, 0
+  index: -1
+newArrow
+  rotate: false
+  xy: 1, 1
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
