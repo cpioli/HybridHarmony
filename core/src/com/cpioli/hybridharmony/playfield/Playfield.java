@@ -39,6 +39,7 @@ public class Playfield extends Group implements PlayfieldSubject {
 	private boolean isDragged;
 	private boolean isPaused;
 	Cell currentCell;
+	Cell cellGrid[][];
 	MeshActor beakerDroplet;
 	private Selection selection;
 	private Image endpointImg1;
@@ -67,100 +68,19 @@ public class Playfield extends Group implements PlayfieldSubject {
 		this.setBounds(30.0f, 30.0f, 480.0f, 480.0f);
 		observers = new ArrayList<PlayfieldObserver>();
 		isPaused = false;
-		int randomGen;
-		float xloc, yloc;
-		Cell cell;
 		System.out.println("Assigning the endpoints");
-		endpointImg1 = Assets.bigEncapsulator1;
-		endpointImg1.setPosition(0.0f, 0.0f);
-		endpointImg1.setVisible(false);
-		endpointImg1.setTouchable(Touchable.disabled);
-		endpointImg2 = Assets.bigEncapsulator2;
-		endpointImg2.setVisible(false);
-		endpointImg2.setPosition(0.0f, 0.0f);
-		endpointImg2.setTouchable(Touchable.disabled);
-		System.out.println("completed endpoint assignment");
 
-		
-		for(int x = 0; x < 5; x++) {
-			for(int y = 0; y < 5; y++) {
-				randomGen = 4;
-				xloc = (float)(96*x);
-				yloc = (float)(96*y);
-				randomGen = GameService.INSTANCE.randomGen();
-				cell = new Cell(xloc, yloc, 88.0f, randomGen, this.getSpectrumColor(randomGen), x, y, selection, "" + x + y);
-				this.addActor(cell);
-				cell.setWidth(0.0f);
-				cell.setHeight(0.0f);
-				cell.setX(cell.getX() + 44.0f);
-				cell.setY(cell.getY() + 44.0f);
-				//cell.setOrigin(MeshActor.transformOrigin.CENTER);
-				cell.setOrigin(Align.center);
-				cell.setTouchable(Touchable.disabled);
-			}
-		}
-		
-		
-		
-		WallBuilder wallBuilder = new WallBuilder();
-		wallCache = wallBuilder.addWallsToCache();
-		currentWall = wallCache.retrieveWall(1); //only going to use one of the first three walls to start with
-		walls = new HashMap<String, MeshActor>();
-		GridCoordinate gc = new GridCoordinate(0, 0);
-		for(int i = 8; i >= 0; i--) {
-			for(int j = 0; j < 9; j++) {
-				//walls are only there if the i or j values are odd (or both)
-				//the meshactor's location will be (i
-				MeshActor actor;
-				if(i%2 == 1 || j%2 == 1) {
-					float x, y;					
-					gc.x = i;
-					gc.y = j;
-					if(i%2 == 0 && j%2 == 1) {//in this case we have a long mesh actor
-						x = (float)(96 * (i/2));
-						y = (float)(88 + 96 * (j/2));
-						actor = new MeshActor(x, y, 88.0f, 8.0f, Color.RED, null);
-						this.addActor(actor);
-						walls.put(gc.toString(), actor);
-						//System.out.println("New wall at (" + i + ", " + j + ") is (" + x + ", " + y + ") whose dimensions are 48wx5h");
-					} else if (i%2 == 1 && j%2 == 0) {
-						x = (float)(88 + 96 * (i/2));
-						y = (float)(96 * (j/2));
-						actor = new MeshActor(x, y, 8.0f, 88.0f, Color.RED, null);
-						this.addActor(actor);
-						walls.put(gc.toString(), actor);
-						//System.out.println("New wall at (" + i + ", " + j + ") is (" + x + ", " + y + ") whose dimensions are 5wx48h");
-					} else if (i%2 == 1 && j%2 == 1) {
-						x = (float)(88 + 96 * (i/2));
-						y = (float)(88 + 96 * (j/2));
-						actor = new MeshActor(x, y, 8.0f, 8.0f, Color.RED, null);
-						this.addActor(actor);
-						walls.put(gc.toString(), actor);
-						//System.out.println("New wall at (" + i + ", " + j + ") is (" + x + ", " + y + ") whose dimensions are 5wx5h");
-					}
-					
-					if(currentWall.coordinateIsWall(i, j)) {
-						walls.get(gc.toString()).setVisible(true);
-					} else {
-						walls.get(gc.toString()).setVisible(false);
-					}
-				}
-			}
-		}
-		this.addActor(endpointImg1);
-		this.addActor(endpointImg2);
-		System.out.println("Added actors to the playfield");
 
-		
-		endpoints = new Array<GridCoordinate>(2);
-		endpoints.add(new GridCoordinate(0,0));
-		endpoints.add(new GridCoordinate(0,0));
-		System.out.println("created digital endpoints");
-		
+		generateCells();
+		generateWalls();
+		generateEndpoints();
 		assignEndpoints();
+		
+		
+
 
 		//Astar.INSTANCE.initialize(currentWall);
-		
+
 		super.addListener(new ClickListener() {
 			
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -205,13 +125,147 @@ public class Playfield extends Group implements PlayfieldSubject {
 		this.selectionPhaseDuration = 0.0f;
 	}
 
-	public void render(ShapeRenderer renderer) {
-		SnapshotArray<Actor> children = super.getChildren();
-		int count = children.size;
-		for(int i = 0; i < count; i++) {
-			Cell cell = (Cell)children.get(i);
-			cell.renderShape(renderer);
+	private void generateCells() {
+		Cell cell;
+		float xloc, yloc;
+		int randomGen;
+		cellGrid = new Cell[5][5];
+		for(int x = 0; x < 5; x++) {
+			for(int y = 0; y < 5; y++) {
+				randomGen = 4;
+				xloc = (float)(96*x);
+				yloc = (float)(96*y);
+				randomGen = GameService.INSTANCE.randomGen();
+				cell = new Cell(xloc, yloc, 88.0f, randomGen, this.getSpectrumColor(randomGen), x, y, selection, "" + x + y);
+				this.addActor(cell);
+				cell.setWidth(0.0f);
+				cell.setHeight(0.0f);
+				cell.setX(cell.getX() + 44.0f);
+				cell.setY(cell.getY() + 44.0f);
+				//cell.setOrigin(MeshActor.transformOrigin.CENTER);
+				cell.setOrigin(Align.center);
+				cell.setTouchable(Touchable.disabled);
+				cellGrid[x][y] = cell;
+			}
 		}
+	}
+
+	private void generateWalls() {
+		WallBuilder wallBuilder = new WallBuilder();
+		wallCache = wallBuilder.addWallsToCache();
+		currentWall = wallCache.retrieveWall(1); //only going to use one of the first three walls to start with
+		walls = new HashMap<String, MeshActor>();
+		GridCoordinate gc = new GridCoordinate(0, 0);
+		for(int i = 8; i >= 0; i--) {
+			for(int j = 0; j < 9; j++) {
+				//walls are only there if the i or j values are odd (or both)
+				//the meshactor's location will be (i
+				MeshActor actor;
+				if(i%2 == 1 || j%2 == 1) {
+					float x, y;
+					gc.x = i;
+					gc.y = j;
+					if(i%2 == 0 && j%2 == 1) {//in this case we have a long mesh actor
+						x = (float)(96 * (i/2));
+						y = (float)(88 + 96 * (j/2));
+						actor = new MeshActor(x, y, 88.0f, 8.0f, Color.RED, null);
+						this.addActor(actor);
+						walls.put(gc.toString(), actor);
+						//System.out.println("New wall at (" + i + ", " + j + ") is (" + x + ", " + y + ") whose dimensions are 48wx5h");
+					} else if (i%2 == 1 && j%2 == 0) {
+						x = (float)(88 + 96 * (i/2));
+						y = (float)(96 * (j/2));
+						actor = new MeshActor(x, y, 8.0f, 88.0f, Color.RED, null);
+						this.addActor(actor);
+						walls.put(gc.toString(), actor);
+						//System.out.println("New wall at (" + i + ", " + j + ") is (" + x + ", " + y + ") whose dimensions are 5wx48h");
+					} else if (i%2 == 1 && j%2 == 1) {
+						x = (float)(88 + 96 * (i/2));
+						y = (float)(88 + 96 * (j/2));
+						actor = new MeshActor(x, y, 8.0f, 8.0f, Color.RED, null);
+						this.addActor(actor);
+						walls.put(gc.toString(), actor);
+						//System.out.println("New wall at (" + i + ", " + j + ") is (" + x + ", " + y + ") whose dimensions are 5wx5h");
+					}
+
+					if(currentWall.coordinateIsWall(i, j)) {
+						walls.get(gc.toString()).setVisible(true);
+					} else {
+						walls.get(gc.toString()).setVisible(false);
+					}
+				}
+			}
+		}
+	}
+
+	public void generateEndpoints() {
+		endpointImg1 = Assets.bigEncapsulator1;
+		endpointImg1.setPosition(0.0f, 0.0f);
+		endpointImg1.setVisible(false);
+		endpointImg1.setTouchable(Touchable.disabled);
+		endpointImg2 = Assets.bigEncapsulator2;
+		endpointImg2.setVisible(false);
+		endpointImg2.setPosition(0.0f, 0.0f);
+		endpointImg2.setTouchable(Touchable.disabled);
+		System.out.println("completed endpoint assignment");
+
+		this.addActor(endpointImg1);
+		this.addActor(endpointImg2);
+		System.out.println("Added actors to the playfield");
+
+		endpoints = new Array<GridCoordinate>(2);
+		endpoints.add(new GridCoordinate(0, 0));
+		endpoints.add(new GridCoordinate(0, 0));
+		System.out.println("created digital endpoints");
+	}
+
+	public void assignEndpoints() {
+		//TODO: complete
+		genRandomEndpoint(endpoints.get(0));
+		while( (endpoints.get(1).getX() == 0 || endpoints.get(1).getY() == 0)
+				|| (GridCoordinate.difference(endpoints.get(0), endpoints.get(1)) < 3)) {
+			genRandomEndpoint(endpoints.get(0));
+			genRandomEndpoint(endpoints.get(1));
+		}
+
+		Cell endpoint1 = ((Cell)(this.findActor(endpoints.get(0).toString())));
+		if(endpoint1.getColorValue() > 4) { //the cell is white
+			System.out.println("Endpoint 1: " + endpoint1.getColorValue() + ", " + endpoint1.getColor().g);
+			endpointImg1.setColor(Color.BLACK);
+		} else if (endpoint1.getColorValue() < 4) {
+			endpointImg1.setColor(Color.WHITE);
+		}
+		endpoint1.setEndpoint(true);
+		endpointImg1.setPosition(endpoints.get(0).x * 96.0f + 25.0f, endpoints.get(0).y * 96.0f + 25.0f);
+		endpointImg1.setVisible(true);
+
+		Cell endpoint2 = ((Cell)(this.findActor(endpoints.get(1).toString())));
+		if(endpoint2.getColorValue() > 4) {//if cell is white
+			System.out.println("Endpoint 2: " + endpoint2.getColorValue() + ", " + endpoint2.getColor().g);
+			endpointImg2.setColor(Color.BLACK);
+		} else if (endpoint2.getColorValue() < 4) {
+			endpointImg2.setColor(Color.WHITE);
+		}
+		endpoint2.setEndpoint(true);
+		endpointImg2.setPosition(endpoints.get(1).x * 96.0f + 25.0f, endpoints.get(1).y * 96.0f + 25.0f); //although I had to subtract 20.0f from each endpoint's x/y position,
+		//since these Cells are now relative to the Playfield so much their images.
+		System.out.println("Endpoint 1's color: " + endpointImg1.getColor().toString());
+		System.out.println("Endpoint 1: " + endpoints.get(0).toString());
+		System.out.println("Endpoint 1's xy coordinates: (" + endpoint1.getX() + ", " + endpoint1.getY() + ")");
+
+		System.out.println("Endpoint 2's color: " + endpointImg2.getColor().toString());
+		System.out.println("Endpoint 2: " + endpoints.get(1).toString());
+		System.out.println("Endpoint 2's xy coordinates: (" + endpoint2.getY() + ", " + endpoint2.getY() + ")");
+		endpointImg2.setVisible(true);
+	}
+
+	public void render(ShapeRenderer renderer) {
+		for(int x = 0; x < 5; x++) {
+			for(int y = 0; y < 5; y++) {
+				cellGrid[x][y].renderShape(renderer);
+			}
+		}
+		//TODO: render the walls
 	}
 
 	//At the start, an introduction of the cells will be given onstage
@@ -471,45 +525,7 @@ public class Playfield extends Group implements PlayfieldSubject {
 		gc.y = (int)(Math.random() * 4);
 	}
 	
-	public void assignEndpoints() {
-		//TODO: complete
-		genRandomEndpoint(endpoints.get(0));
-		while( (endpoints.get(1).getX() == 0 || endpoints.get(1).getY() == 0)
-			|| (GridCoordinate.difference(endpoints.get(0), endpoints.get(1)) < 3)) {
-			genRandomEndpoint(endpoints.get(0));
-			genRandomEndpoint(endpoints.get(1));
-		}
-		
-		Cell endpoint1 = ((Cell)(this.findActor(endpoints.get(0).toString())));
-		if(endpoint1.getColorValue() > 4) { //the cell is white
-			System.out.println("Endpoint 1: " + endpoint1.getColorValue() + ", " + endpoint1.getColor().g);
-			endpointImg1.setColor(Color.BLACK);
-		} else if (endpoint1.getColorValue() < 4) {
-			endpointImg1.setColor(Color.WHITE);
-		}
-		endpoint1.setEndpoint(true);
-		endpointImg1.setPosition(endpoints.get(0).x * 96.0f + 25.0f, endpoints.get(0).y * 96.0f + 25.0f);
-		endpointImg1.setVisible(true);
-		
-		Cell endpoint2 = ((Cell)(this.findActor(endpoints.get(1).toString())));
-		if(endpoint2.getColorValue() > 4) {//if cell is white
-			System.out.println("Endpoint 2: " + endpoint2.getColorValue() + ", " + endpoint2.getColor().g);
-			endpointImg2.setColor(Color.BLACK);
-		} else if (endpoint2.getColorValue() < 4) {
-			endpointImg2.setColor(Color.WHITE);
-		}
-		endpoint2.setEndpoint(true);
-		endpointImg2.setPosition(endpoints.get(1).x * 96.0f + 25.0f, endpoints.get(1).y * 96.0f + 25.0f); //although I had to subtract 20.0f from each endpoint's x/y position,
-																					  //since these Cells are now relative to the Playfield so much their images.
-		System.out.println("Endpoint 1's color: " + endpointImg1.getColor().toString());
-		System.out.println("Endpoint 1: " + endpoints.get(0).toString());
-		System.out.println("Endpoint 1's xy coordinates: (" + endpoint1.getX() + ", " + endpoint1.getY() + ")");
 
-		System.out.println("Endpoint 2's color: " + endpointImg2.getColor().toString());
-		System.out.println("Endpoint 2: " + endpoints.get(1).toString());
-		System.out.println("Endpoint 2's xy coordinates: (" + endpoint2.getY() + ", " + endpoint2.getY() + ")");
-		endpointImg2.setVisible(true);
-	}
 	
 	public void removeEndpoints() {
 		Cell endpoint1 = ((Cell)(this.findActor(endpoints.get(0).toString())));

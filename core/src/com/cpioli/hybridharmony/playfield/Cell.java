@@ -134,7 +134,6 @@ public class Cell extends Actor {
 	//}
 
     public void renderShape(ShapeRenderer renderer) {
-		System.out.println("Did we reach the render portion for the Cell object?");
 		if(renderer.isDrawing()) {
             renderer.setColor(super.getColor());
             renderer.rect(super.getY(), super.getY(), super.getWidth(), super.getHeight());
