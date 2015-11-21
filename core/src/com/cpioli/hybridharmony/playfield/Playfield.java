@@ -70,57 +70,14 @@ public class Playfield extends Group implements PlayfieldSubject {
 		isPaused = false;
 		System.out.println("Assigning the endpoints");
 
-
 		generateCells();
 		generateWalls();
 		generateEndpoints();
 		assignEndpoints();
-		
-		
-
-
+		addPlayfieldListener();
 		//Astar.INSTANCE.initialize(currentWall);
 
-		super.addListener(new ClickListener() {
-			
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				Playfield playfield = (Playfield)event.getListenerActor();
-				playfield.isDragging();
-				return true;
-			}
-			
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				Playfield playfield = (Playfield)event.getListenerActor();
-				System.out.println("We triggered the touchUp event for the playfield object.");
-				//System.out.println(x + " " + y);
-				//System.out.println("x: " + playfield.getX() + " - " + playfield.getRight());
-				//System.out.println("y: " + playfield.getY() + " - " + playfield.getTop());
-				Selection selection = playfield.getSelection();
-				playfield.isNotDragging();
-				if((playfield.getX() > x || playfield.getRight() < x)
-						|| (playfield.getY() > y || playfield.getTop() < y)) {
-					System.out.println("We're outside of the playfield area, so we're deselecting the cells.");
-					System.out.println("(" + x + ", " + y + ")");
-					selection.clear(Selection.removalCondition.DESELECTION);
-				} else {
-					if(playfield.getTouchable() == Touchable.enabled
-						&& selection.size > 0){
-						Cell endpoint1 = selection.get(0);
-						Cell endpoint2 = selection.get(selection.size - 1);
-						System.out.println("Endpoint 1, 2: " + endpoint1.isEndpoint() + ", " + endpoint2.isEndpoint());
-						if(endpoint1.isEndpoint() && endpoint2.isEndpoint() && !endpoint1.equals(endpoint2)) {
-							System.out.println("We're going to submit this!" + selection.toString());
-							performSubmission();
-							//TODO: replace "performSubmission()" with "GameService.INSTANCE.changeToSubmissionPhase()"
-						} else {
-							System.out.println("The selection isn't the correct size, we won't submit it!");
-							System.out.println(selection.toString());
-							selection.clear(Selection.removalCondition.DESELECTION);
-						}
-						System.out.println("\n");
-					}
-				}
-			}});
+
 		
 		this.selectionPhaseDuration = 0.0f;
 	}
@@ -138,10 +95,10 @@ public class Playfield extends Group implements PlayfieldSubject {
 				randomGen = GameService.INSTANCE.randomGen();
 				cell = new Cell(xloc, yloc, 88.0f, randomGen, this.getSpectrumColor(randomGen), x, y, selection, "" + x + y);
 				this.addActor(cell);
-				cell.setWidth(0.0f);
-				cell.setHeight(0.0f);
-				cell.setX(cell.getX() + 44.0f);
-				cell.setY(cell.getY() + 44.0f);
+				cell.setWidth(0.0f); //this is for the intro tween
+				cell.setHeight(0.0f); //this is for the intro tween
+				cell.setX(cell.getX() + 29.5f); //adjusting to the center of the green grid
+				cell.setY(cell.getY() + 29.5f); //adjusting to the center of the green grid
 				//cell.setOrigin(MeshActor.transformOrigin.CENTER);
 				cell.setOrigin(Align.center);
 				cell.setTouchable(Touchable.disabled);
@@ -257,6 +214,50 @@ public class Playfield extends Group implements PlayfieldSubject {
 		System.out.println("Endpoint 2: " + endpoints.get(1).toString());
 		System.out.println("Endpoint 2's xy coordinates: (" + endpoint2.getY() + ", " + endpoint2.getY() + ")");
 		endpointImg2.setVisible(true);
+	}
+
+	private void addPlayfieldListener() {
+
+		super.addListener(new ClickListener() {
+
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				Playfield playfield = (Playfield)event.getListenerActor();
+				playfield.isDragging();
+				return true;
+			}
+
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				Playfield playfield = (Playfield)event.getListenerActor();
+				System.out.println("We triggered the touchUp event for the playfield object.");
+				//System.out.println(x + " " + y);
+				//System.out.println("x: " + playfield.getX() + " - " + playfield.getRight());
+				//System.out.println("y: " + playfield.getY() + " - " + playfield.getTop());
+				Selection selection = playfield.getSelection();
+				playfield.isNotDragging();
+				if((playfield.getX() > x || playfield.getRight() < x)
+						|| (playfield.getY() > y || playfield.getTop() < y)) {
+					System.out.println("We're outside of the playfield area, so we're deselecting the cells.");
+					System.out.println("(" + x + ", " + y + ")");
+					selection.clear(Selection.removalCondition.DESELECTION);
+				} else {
+					if(playfield.getTouchable() == Touchable.enabled
+							&& selection.size > 0){
+						Cell endpoint1 = selection.get(0);
+						Cell endpoint2 = selection.get(selection.size - 1);
+						System.out.println("Endpoint 1, 2: " + endpoint1.isEndpoint() + ", " + endpoint2.isEndpoint());
+						if(endpoint1.isEndpoint() && endpoint2.isEndpoint() && !endpoint1.equals(endpoint2)) {
+							System.out.println("We're going to submit this!" + selection.toString());
+							performSubmission();
+							//TODO: replace "performSubmission()" with "GameService.INSTANCE.changeToSubmissionPhase()"
+						} else {
+							System.out.println("The selection isn't the correct size, we won't submit it!");
+							System.out.println(selection.toString());
+							selection.clear(Selection.removalCondition.DESELECTION);
+						}
+						System.out.println("\n");
+					}
+				}
+			}});
 	}
 
 	public void render(ShapeRenderer renderer) {

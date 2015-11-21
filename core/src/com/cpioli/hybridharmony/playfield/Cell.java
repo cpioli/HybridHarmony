@@ -136,7 +136,7 @@ public class Cell extends Actor {
     public void renderShape(ShapeRenderer renderer) {
 		if(renderer.isDrawing()) {
             renderer.setColor(super.getColor());
-            renderer.rect(super.getY(), super.getY(), super.getWidth(), super.getHeight());
+            renderer.rect(super.getX(), super.getY(), super.getWidth(), super.getHeight());
         }
 		//super.render(renderer);
 
@@ -249,7 +249,8 @@ public class Cell extends Actor {
 						float xloc = (float)(8*(cell.getGC().x) + 88*cell.getGC().x);
 						float yloc = (float)(96*cell.getGC().y);
 						//cell.setXY(xloc, yloc);
-						cell.setOrigin(xloc, yloc);
+						//cell.setOrigin(xloc, yloc);
+						cell.setPosition(xloc, yloc);
 						cell.setColorValue(GameService.INSTANCE.generateNewCell());
 						//cell.setCellOriginalColor();
 						cell.setColor(Color.WHITE);
@@ -317,7 +318,7 @@ public class Cell extends Actor {
 			int counter = 0;
 			int end = Math.abs(dy);
 			for(int i = lastCell.y + increment; counter < end; i += increment) {
-				Cell examine = (Cell)playfield.findActor("" + currentCell.x + i);
+				Cell examine = playfield.findActor("" + currentCell.x + i);
 				wall_locx = currentCell.x * 2;
 				wall_locy = i * 2 - increment;
 				if(!selection.contains(examine, false)) {
