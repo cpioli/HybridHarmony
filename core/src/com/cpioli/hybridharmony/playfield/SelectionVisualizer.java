@@ -2,6 +2,7 @@ package com.cpioli.hybridharmony.playfield;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class SelectionVisualizer extends Actor {
@@ -27,7 +28,7 @@ public class SelectionVisualizer extends Actor {
 		coconut = new Color(1.0f, 0.988f, 0.811f, 1.0f);
 	}
 	
-	@Override
+	/*@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		batch.end();
 		for(int i = 0; i < selectedCells;i++){
@@ -39,7 +40,7 @@ public class SelectionVisualizer extends Actor {
 		}
 		batch.begin();
 		//System.out.println("Visualizer DRAWN");
-	}
+	}*/
 	
 	/**
 	 * every time a cell is added or removed, this method is called and the

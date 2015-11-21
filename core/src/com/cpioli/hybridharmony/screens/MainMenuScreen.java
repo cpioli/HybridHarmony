@@ -1,19 +1,22 @@
 package com.cpioli.hybridharmony.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.cpioli.hybridharmony.Assets;
-import com.cpioli.hybridharmony.Scene2DUI;
+import com.cpioli.hybridharmony.HybridHarmony;
 
 public class MainMenuScreen implements ReusableScreen {
 	
-	Scene2DUI game;
+	HybridHarmony game;
+	Viewport viewport;
 	Skin skin;
 	Stage stage;
 	Table root;
@@ -24,14 +27,16 @@ public class MainMenuScreen implements ReusableScreen {
 	ImageButton tutorialButton;
 	ImageButton creditsButton;
 	
-	public MainMenuScreen(Scene2DUI game){
+	public MainMenuScreen(HybridHarmony game){
 		this.game = game;
 		isInitialized = false;
 	}
 	
 	public void show() {
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		
+		viewport = new ScreenViewport();
+		stage = new Stage(viewport);
+		stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 		System.out.println(Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
 		Gdx.input.setInputProcessor(stage);
 		
@@ -44,7 +49,7 @@ public class MainMenuScreen implements ReusableScreen {
 		stage.addActor(root);
 
 		root.setClip(true);
-		root.size(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		//root.size(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		root.setX(0.0f);
 		root.setY(0.0f);
 		
@@ -57,7 +62,7 @@ public class MainMenuScreen implements ReusableScreen {
 		startGameButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				System.out.println("Starting the game...");
-				game.setScreen((ReusableScreen)game.gameScreen);
+				game.setScreen(game.gameScreen);
 			}
 		});
 		
@@ -111,14 +116,14 @@ public class MainMenuScreen implements ReusableScreen {
 
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); //without act, all images stay in place
 		stage.draw(); //without draw, no images get rendered and no actions can be taken on input
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
 	}
 
 	public void resize(int width, int height) {
-		stage.setViewport(width, height, true);
+		//stage.setViewport(width, height, true);
 	}
 
 	public void resume() {

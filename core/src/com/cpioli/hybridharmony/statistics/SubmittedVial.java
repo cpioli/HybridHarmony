@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Align;
 
 public class SubmittedVial extends Group implements SubmittedVialSubject {
 	
@@ -16,7 +17,7 @@ public class SubmittedVial extends Group implements SubmittedVialSubject {
 	public ArrayList<SubmittedVialObserver> observers;
 	
 	public SubmittedVial(float x, float y, float radius) {
-		vial = new CircleActor(x, y, radius, 50, Color.CLEAR, "submittedvial");
+		vial = new CircleActor(x, y, Align.bottomLeft, "submittedVial");
 		vial.addBorder(5.0f, Color.YELLOW);
 		this.addActor(vial);
 		size = 0;

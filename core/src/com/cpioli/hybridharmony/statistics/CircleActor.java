@@ -1,13 +1,15 @@
 package com.cpioli.hybridharmony.statistics;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Align;
 
 public class CircleActor extends Actor implements Disposable {
 
@@ -37,39 +39,14 @@ public class CircleActor extends Actor implements Disposable {
 	};
 	protected transformOrigin origin;
 	
-	public CircleActor(float x, float y, float radius, int segments, float r, float g, float b, String name) {
-		this(x, y, radius, segments, new Color(r,g,b,1.0f), name);
-	}
-	
-	public CircleActor(float x, float y, float r, int segments, Color color, String name) {
-		super.setX(x - r);
-		super.setY(y - r);
-		super.setWidth(r+r);
-		super.setHeight(r+r);
-		super.setColor(color);
+	public CircleActor(float x, float y, int alignment, String name) {
+		super.setOrigin(alignment);
 		super.setName(name);
-		this.segments = segments;
-		this.radius = r;
-		theta = 2 * (float)Math.PI / segments;
-		c = (float)Math.cos(theta);
-		s = (float)Math.sin(theta);
-		
-		this.mesh = new Mesh(true, segments+2, segments + 2,
-				new VertexAttribute(Usage.Position, 3, "a_position"),
-				new VertexAttribute(Usage.ColorPacked, 4, "a_color")); //number of vertices used = segments + 1
-		
-		thickness = 0.0f;
-		borderColor = null;
-		hasBorder = false;
-		this.borderMesh = new Mesh(true, (segments+1) * 2, (segments+1) * 2,
-				new VertexAttribute(Usage.Position, 3, "a_position"),
-				new VertexAttribute(Usage.ColorPacked, 4, "a_color"));
-		this.origin = transformOrigin.LOWER_LEFT;
-		
-		
+		super.setX(x);
+		super.setY(y);
 	}
 	
-	@Override
+	/*@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		batch.end();
 		float tempColor = Color.toFloatBits(super.getColor().r, super.getColor().g, super.getColor().b, super.getColor().a * parentAlpha);
@@ -109,7 +86,7 @@ public class CircleActor extends Actor implements Disposable {
 		vertices[(segments+1)*4 + 3] = vertices[7];
 		if(hasBorder) {
 			
-			/*borderVertices[0] = vertices[4]; //REMEMBER: the first vertex in the Circle is the center of the circle
+			borderVertices[0] = vertices[4]; //REMEMBER: the first vertex in the Circle is the center of the circle
 			borderVertices[1] = vertices[5];//           the second vertex is the first vertex on the circle's edge
 			borderVertices[2] = 0.0f; //this is 0.0f
 			borderVertices[3] = borderTempColor;
@@ -133,7 +110,7 @@ public class CircleActor extends Actor implements Disposable {
 			borderVertices[14] = 0.0f;
 			borderVertices[15] = borderTempColor;
 			
-			*/
+
 
 			for(int i = 0; i < segments; i++) {
 				int k = i * 8;
@@ -169,8 +146,17 @@ public class CircleActor extends Actor implements Disposable {
 		//drawing calculations go here (it might get ugly...)
 		batch.begin();
 		
+	}*/
+
+	public void render(ShapeRenderer renderer) {
+		if(renderer.getCurrentType() != ShapeRenderer.ShapeType.Filled) {
+			renderer.end();
+			renderer.begin(ShapeType.Filled);
+		}
+		renderer.setColor(super.getColor());
+		renderer.circle(super.getX(), super.getY(), radius);
 	}
-	
+
 	public void setRadius(float radius) {
 		this.radius = radius;
 		float width = radius * 2;

@@ -15,13 +15,15 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.cpioli.hybridharmony.GameService;
 
-public class Cell extends MeshActor {
+public class Cell extends Actor {
 	private final float TWEEN_DURATION = 0.25f;
 	
 	public GridCoordinate gc;
@@ -72,7 +74,12 @@ public class Cell extends MeshActor {
 	 */
 	
 	public Cell(float x, float y, float dimension, int colorValue, Color color, int gridX, int gridY, Selection selection, String name){
-		super(x, y, dimension, dimension, color, name);
+		//super(x, y, dimension, dimension, color, name);
+		super.setPosition(x, y);
+		super.setWidth(dimension);
+		super.setHeight(dimension);
+		super.setColor(color);
+		super.setName(name);
 		this.setColorValue(colorValue);
 		this.selection = selection;
 		this.gc = new GridCoordinate(gridX, gridY);
@@ -84,15 +91,14 @@ public class Cell extends MeshActor {
 		this.previousCellState = null;
 		
 		this.isEndpoint = false;
-		
-		super.addListener(new ClickListener() {			
-			public void enter(InputEvent event, float x, float y, int pointer, Actor actor){
-				Cell cell = (Cell)event.getListenerActor();
-				Playfield playfield = (Playfield)cell.getParent();
+		super.addListener(new ClickListener() {
+			public void enter(InputEvent event, float x, float y, int pointer, Actor actor) {
+				Cell cell = (Cell) event.getListenerActor();
+				Playfield playfield = (Playfield) cell.getParent();
 				Selection selection = playfield.getSelection();
-				if(playfield.getIsDragged()){
-					if(selection.contains(cell, true)){//if this cell is already in the selection
-						if(selection.indexOf(cell, true) == (selection.size - 2)){ //if the index is the second-to-last cell added
+				if (playfield.getIsDragged()) {
+					if (selection.contains(cell, true)) {//if this cell is already in the selection
+						if (selection.indexOf(cell, true) == (selection.size - 2)) { //if the index is the second-to-last cell added
 							//The following block of code is to be the equivalent of
 							//version 1's Moderator.RemoveFromSelection method
 							Cell popped = selection.pop(Selection.removalCondition.DESELECTION);
@@ -101,8 +107,8 @@ public class Cell extends MeshActor {
 							//selection.pop(Selection.removalCondition.DESELECTION);
 							//System.out.println("Selection contents: " + selection.toString());
 						}
-					} else if(selection.size == 0 ||
-							(cell.uldrNeighbor(selection, cell) && selection.size < 12)){ //UPDATED 7/11/13: changed max selection size from 6 to 12
+					} else if (selection.size == 0 ||
+							(cell.uldrNeighbor(selection, cell) && selection.size < 12)) { //UPDATED 7/11/13: changed max selection size from 6 to 12
 						//This block of code is the equivalent to version 1's Moderator.addToSelection() method
 						System.out.println("Added " + cell.getName() + " to the selection, with color " + cell.getColor().toString().substring(0, 6));
 						selection.add(cell);
@@ -114,7 +120,7 @@ public class Cell extends MeshActor {
 					}
 				}
 			}
-			
+
 			//works with enter/exit, but only the first time after entering. For it to work again
 			//you have to exit and re-enter a meshactor
 			/*public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -127,11 +133,13 @@ public class Cell extends MeshActor {
 	//	super.draw(batch, parentAlpha);
 	//}
 
-    public void render(ShapeRenderer renderer) {
-        if(renderer.isDrawing()) {
+    public void renderShape(ShapeRenderer renderer) {
+		System.out.println("Did we reach the render portion for the Cell object?");
+		if(renderer.isDrawing()) {
             renderer.setColor(super.getColor());
             renderer.rect(super.getY(), super.getY(), super.getWidth(), super.getHeight());
         }
+		//super.render(renderer);
 
     }
 
@@ -146,27 +154,32 @@ public class Cell extends MeshActor {
 			if (leftOfCell(stretchingCell)) {
 				newWidth = 96.0f;
 				newHeight = this.getHeight();
-				stretchingCell.origin = MeshActor.transformOrigin.LOWER_RIGHT;
+			//	stretchingCell.origin = MeshActor.transformOrigin.LOWER_RIGHT;
+				stretchingCell.setOrigin(Align.bottomRight);
 			}
 			if (rightOfCell(stretchingCell)) {
 				newWidth = 96.0f;
 				newHeight = this.getHeight();
-				stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+				//stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+				stretchingCell.setOrigin(Align.bottomLeft);
 			}
 			if (belowCell(stretchingCell)) {
 				newWidth = this.getWidth();
 				newHeight = 96.0f;
-				stretchingCell.origin = MeshActor.transformOrigin.UPPER_LEFT;
+			//	stretchingCell.origin = MeshActor.transformOrigin.UPPER_LEFT;
+				stretchingCell.setOrigin(Align.topLeft);
 			}
 			if (aboveCell(stretchingCell)) {
 				newWidth = this.getWidth();
 				newHeight = 96.0f;
-				stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;	
+			//	stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+				stretchingCell.setOrigin(Align.bottomLeft);
 			}
 			stretchingCell.addAction(sequence(sizeTo(newWidth, newHeight, TWEEN_DURATION, STRETCH_INTERPOLATION), new Action() {
 				public boolean act(float delta) {
 					Cell cell = (Cell)this.getActor();
-					cell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+					//cell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+					cell.setOrigin(Align.bottomLeft);
 					cell.cellTweeningState = cellTweeningState.STATIC; //returning to non-tweening state
 					return true;
 				}}));
@@ -186,24 +199,29 @@ public class Cell extends MeshActor {
 		
 			if(sAction != null) {
 				sAction.reset();
-				stretchingCell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+				//stretchingCell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+				stretchingCell.setOrigin(Align.bottomLeft);
 			}
 			if (leftOfCell(stretchingCell)) {
-				stretchingCell.origin = MeshActor.transformOrigin.LOWER_RIGHT;
+			//	stretchingCell.origin = MeshActor.transformOrigin.LOWER_RIGHT;
+				stretchingCell.setOrigin(Align.bottomRight);
 			}
 			if (rightOfCell(stretchingCell)) {
-				stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+			//	stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+				stretchingCell.setOrigin(Align.bottomLeft);
 			}
 			if (belowCell(stretchingCell)) {
-				stretchingCell.origin = MeshActor.transformOrigin.UPPER_LEFT;
+			//	stretchingCell.origin = MeshActor.transformOrigin.UPPER_LEFT;
+				stretchingCell.setOrigin(Align.topLeft);
 			}
 			if (aboveCell(stretchingCell)) {
-				stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+			//	stretchingCell.origin = MeshActor.transformOrigin.LOWER_LEFT;
+				stretchingCell.setOrigin(Align.bottomLeft);
 			}
 			stretchingCell.addAction(sequence(sizeTo(88.0f, 88.0f, TWEEN_DURATION, STRETCH_INTERPOLATION), new Action() {
 				public boolean act(float delta) {
 					Cell cell = (Cell)this.getActor();
-					cell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+					//cell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
 					cell.cellTweeningState = cellTweeningState.STATIC; //returning to non-tweening state
 					return true;
 				}}));
@@ -227,16 +245,18 @@ public class Cell extends MeshActor {
 					public boolean act(float delta) {
 						Cell cell = (Cell)this.getActor();
 						cell.setSize(18.0f, 18.0f);
-						cell.setOrigin(MeshActor.transformOrigin.CENTER);
+						//cell.setOrigin(MeshActor.transformOrigin.CENTER);
+						cell.setOrigin(Align.center);
 						float xloc = (float)(8*(cell.getGC().x) + 88*cell.getGC().x);
 						float yloc = (float)(96*cell.getGC().y);
-						cell.setXY(xloc, yloc);
+						//cell.setXY(xloc, yloc);
+						cell.setOrigin(xloc, yloc);
 						cell.setColorValue(GameService.INSTANCE.generateNewCell());
 						//cell.setCellOriginalColor();
 						cell.setColor(Color.WHITE);
 						cell.addAction(
                                 sequence(
-										moveBy(35.0f, 35.0f, VIAL_ADDITION_SPEED, Interpolation.exp5Out),
+										Actions.moveBy(35.0f, 35.0f, VIAL_ADDITION_SPEED, Interpolation.exp5Out),
 										parallel(
 												color(
 														((Playfield)cell.getParent()).getSpectrumColor(cell.getColorValue())
@@ -352,7 +372,7 @@ public class Cell extends MeshActor {
 	 * @return
 	 */
 		
-	private static Action stillStretching(MeshActor cell) {
+	private static Action stillStretching(Cell cell) {
 		Array<Action> actionArray = cell.getActions();
 		for(int i = 0; i < actionArray.size; i++) {
 			Action a = actionArray.get(i);
@@ -364,7 +384,7 @@ public class Cell extends MeshActor {
 		return null;
 	}
 	
-	private static ColorAction stillChangingColor(MeshActor cell) {
+	private static ColorAction stillChangingColor(Cell cell) {
 		Array<Action> actionArray = cell.getActions();
 		for(int i = 0; i < actionArray.size; i++) {
 			Action a = actionArray.get(i);
@@ -379,7 +399,7 @@ public class Cell extends MeshActor {
 	//to ensure the fill is completed when selecting the next cell, this
 	//method completes the stretch incase the player touched so fast the
 	//program did not detect it should stretch to MAX_SIZE
-	public void fillRemainderStretch(Cell.stretchDirection direction){
+	/*public void fillRemainderStretch(Cell.stretchDirection direction){
 		switch(direction) {
 		case LEFT:
 			this.setOrigin(transformOrigin.LOWER_RIGHT);
@@ -402,7 +422,7 @@ public class Cell extends MeshActor {
 			System.out.println("NOT YET IMPLEMENTED");
 		break;
 		}
-	}
+	}*/
 	
 	public int getGridX() {
 		return gc.getX();

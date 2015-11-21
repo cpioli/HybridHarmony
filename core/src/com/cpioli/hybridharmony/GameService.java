@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.utils.Align;
 import com.cpioli.hybridharmony.performance.SelectionPhaseStatistic;
 import com.cpioli.hybridharmony.performance.SelectionPhaseStatisticArray;
 import com.cpioli.hybridharmony.playfield.Cell;
@@ -308,10 +309,12 @@ public enum GameService implements PlayfieldObserver, PolarityObserver {
 											public boolean act(float delta) {
 												Cell cell = (Cell)this.getActor();
 												cell.setSize(18.0f, 18.0f);
-												cell.setOrigin(MeshActor.transformOrigin.CENTER);
+												//cell.setOrigin(MeshActor.transformOrigin.CENTER);
+												cell.setOrigin(Align.center);
 												float xloc = (float)(96*cell.getGC().getX());
 												float yloc = (float)(96*cell.getGC().getY());
-												cell.setXY(xloc, yloc); //move cells to the lower-left hand side of their location on the Playfield
+												//cell.setXY(xloc, yloc); //move cells to the lower-left hand side of their location on the Playfield
+												cell.setOrigin(xloc, yloc);
 												cell.setColorValue(GameService.INSTANCE.generateNewCell());
 												cell.setColor(Color.WHITE); //same as color of cells in queue
 												cell.addAction(sequence(

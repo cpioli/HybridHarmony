@@ -3,7 +3,9 @@ package com.cpioli.hybridharmony.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,9 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.cpioli.hybridharmony.Assets;
 import com.cpioli.hybridharmony.GameService;
-import com.cpioli.hybridharmony.hybridharmony;
+import com.cpioli.hybridharmony.HybridHarmony;
 import com.cpioli.hybridharmony.playfield.Playfield;
 import com.cpioli.hybridharmony.playfield.Selection;
 import com.cpioli.hybridharmony.playfield.SelectionVisualizer;
@@ -28,11 +32,13 @@ import com.cpioli.hybridharmony.utilities.Astar;
 
 public class GameScreen implements ReusableScreen, GameOverObserver {
 
-	hybridharmony game;
+	HybridHarmony game;
+	Viewport viewport;
 	Stage stage;
 	Table root;
 	Overlay pauseOverlay;
 	Overlay gameOverOverlay;
+	ShapeRenderer shapeRenderer;
 	public boolean isInitialized;
 	public long frames;
 	Playfield playfield;
@@ -46,16 +52,20 @@ public class GameScreen implements ReusableScreen, GameOverObserver {
 	public boolean paused;
 	private Image background;
 	
-	public GameScreen(hybridharmony game){
+	public GameScreen(HybridHarmony game){
 		this.game = game;
 		isInitialized = false;
 		frames = 0;
 	}
 	
 	public void show() {
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		viewport = new ScreenViewport();
+		stage = new Stage(viewport);
+		stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		shapeRenderer = new ShapeRenderer(100);
 		Assets.initBigGameScreenItems();
 		Assets.initBigOverlayItems();
+		Assets.initBigGameScreenItems();
 		createOverlays();
 		Gdx.input.setInputProcessor(stage);
 		gameOver = false;
@@ -89,7 +99,7 @@ public class GameScreen implements ReusableScreen, GameOverObserver {
 		stage.addActor(gameOverOverlay);
 		
 		root.setClip(true);
-		root.size(960, 540);
+		//root.size(960, 540);
 		root.setX(0.0f); 
 		root.setY(0.0f); 
 		
@@ -131,13 +141,16 @@ public class GameScreen implements ReusableScreen, GameOverObserver {
 
 	public void render(float arg0) {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
 		frames++;
-		
+		shapeRenderer.begin(ShapeType.Filled);
+			playfield.render(shapeRenderer);
+			//statistics.render(shapeRenderer);
+		shapeRenderer.end();
 		//System.out.println("Frame " + frames + ":");
 	}
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -47,6 +48,7 @@ public class Assets {
 	public static Image contentsArrow;
 	public static Image queueContainer;
 	public static Image beaker;
+	public static Texture circle;
 	
 	public static Label speedometerTitle;
 	public static Label speedometerValue;
@@ -137,6 +139,7 @@ public class Assets {
 		manager.load("data/myriadPro48.fnt", BitmapFont.class);
 		manager.load("data/myriadPro24.fnt", BitmapFont.class);
 		manager.load("data/bigOverlay.json", Skin.class);
+		manager.load("Circle.png", Texture.class);
 		manager.finishLoading();
 		System.out.println("Finished loading the .atlas, .fnt, and .json files");
 		
@@ -289,10 +292,11 @@ public class Assets {
 			bonusTitle = new Label("BONUS:", labelStyle);
 			bonusNumber = new Label("", labelStyle);
 			gameScreenAssetsLoaded = true;
+			circle = manager.get("Circle.png");
 		}
 	}
 	
 	public static void disposeGameScreenItems() {
-		
+
 	}
 }

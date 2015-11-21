@@ -51,7 +51,7 @@ public class ClippedTexture extends Image {
 	
 	
 	
-	@Override
+	/*@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		validate();
 		
@@ -76,6 +76,6 @@ public class ClippedTexture extends Image {
 				false,
 				false
 				);
-	}
+	}*/
 	
 }

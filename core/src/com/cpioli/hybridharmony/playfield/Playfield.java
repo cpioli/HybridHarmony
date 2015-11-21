@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.cpioli.hybridharmony.Assets;
@@ -93,7 +94,8 @@ public class Playfield extends Group implements PlayfieldSubject {
 				cell.setHeight(0.0f);
 				cell.setX(cell.getX() + 44.0f);
 				cell.setY(cell.getY() + 44.0f);
-				cell.setOrigin(MeshActor.transformOrigin.CENTER);
+				//cell.setOrigin(MeshActor.transformOrigin.CENTER);
+				cell.setOrigin(Align.center);
 				cell.setTouchable(Touchable.disabled);
 			}
 		}
@@ -207,7 +209,8 @@ public class Playfield extends Group implements PlayfieldSubject {
 		SnapshotArray<Actor> children = super.getChildren();
 		int count = children.size;
 		for(int i = 0; i < count; i++) {
-			((Cell)children.get(i)).render(renderer);
+			Cell cell = (Cell)children.get(i);
+			cell.renderShape(renderer);
 		}
 	}
 
@@ -223,7 +226,8 @@ public class Playfield extends Group implements PlayfieldSubject {
 				cell.addAction(sequence(sizeTo(88.0f, 88.0f, tweenDuration, Interpolation.linear), new Action() {
 					public boolean act(float deltaTime) {
 						Cell cell = (Cell)this.getActor();
-						cell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+						//cell.setOrigin(MeshActor.transformOrigin.LOWER_LEFT);
+						cell.setOrigin(Align.bottomLeft);
 						cell.setTouchable(Touchable.enabled);
 						return true;
 					}
@@ -248,7 +252,7 @@ public class Playfield extends Group implements PlayfieldSubject {
 		this.currentCell = cell;
 	}
 	
-	public MeshActor getCurrentMeshActor() {
+	public Cell getCurrentMeshActor() {
 		return this.currentCell;
 	}
 	

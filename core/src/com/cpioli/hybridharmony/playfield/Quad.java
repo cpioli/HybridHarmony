@@ -1,7 +1,6 @@
 package com.cpioli.hybridharmony.playfield;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -11,6 +10,10 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
  * Used to contain both a visual Rectangle/square (view)
  * 
  * UPDATE 9/29: Added a feature to include layering on the z-axis.
+ *
+ * Update 11/18/2015: GL10 is not used any longer
+ * need to adjust game to use GL20 shapeRenderer
+ * This entire object might be deprecated.
  */
 
 public class Quad {
@@ -204,9 +207,9 @@ public class Quad {
 			      x, y+height, 0.0f, tempColor,
 			x+width, y+height, 0.0f, tempColor
 		});
-		mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		//mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 	}
-	
+
 	public void render(Color color) {
 		float tempColor = color.toFloatBits();
 		mesh.setVertices(new float[] {
@@ -215,6 +218,6 @@ public class Quad {
 			      x, y+height, 0.0f, tempColor,
 			x+width, y+height, 0.0f, tempColor
 		});
-		mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		//mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 	}
 }

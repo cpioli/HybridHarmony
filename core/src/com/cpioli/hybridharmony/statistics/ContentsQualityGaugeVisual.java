@@ -1,8 +1,8 @@
 package com.cpioli.hybridharmony.statistics;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.cpioli.hybridharmony.playfield.MeshActor;
 import com.cpioli.hybridharmony.spectrum.Spectrum;
 
@@ -19,8 +19,10 @@ public class ContentsQualityGaugeVisual extends MeshActor {
 		System.out.println("Left Color: " + leftSide.toString());
 		System.out.println("Right Color: " + rightSide.toString());
 	}
-	
-	@Override
+
+
+	//deprecating
+	/*@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		batch.end();
 
@@ -34,6 +36,14 @@ public class ContentsQualityGaugeVisual extends MeshActor {
 		});
 		mesh.render(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		batch.begin();
+	}*/
+
+	public void render(ShapeRenderer renderer) {
+		if(renderer.getCurrentType() != ShapeType.Filled) {
+			renderer.end();
+			renderer.begin(ShapeType.Filled);
+		}
+		renderer.rect(super.getX(), super.getY(), super.getWidth(), super.getHeight(), leftSide, leftSide, rightSide, rightSide);
 	}
 	
 	//Eventually, we will want to tween the Visual's own special Color values,

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -119,7 +120,13 @@ public class MeshActor extends Actor implements Disposable{
 	 * @return
 	 */
 
-	
+	/*public void render(ShapeRenderer renderer) {
+		if(renderer.isDrawing()) {
+			renderer.setColor(super.getColor());
+			renderer.rect(super.getY(), super.getY(), super.getWidth(), super.getHeight());
+		}
+
+	}*/
 	
 	/*-----------------------
 	 * Getter and Setter methods
